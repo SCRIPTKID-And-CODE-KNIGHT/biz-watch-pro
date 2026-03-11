@@ -8,6 +8,7 @@ import { AppLayout } from "@/components/AppLayout";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
+import Sales from "./pages/Sales";
 import Alerts from "./pages/Alerts";
 import AdminStaff from "./pages/AdminStaff";
 import NotFound from "./pages/NotFound";

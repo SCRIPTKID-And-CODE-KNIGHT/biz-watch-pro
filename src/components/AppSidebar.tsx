@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, AlertTriangle, Users, LogOut } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, AlertTriangle, Users, LogOut } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button';
 const mainItems = [
   { title: 'Dashboard', url: '/', icon: LayoutDashboard },
   { title: 'Products', url: '/products', icon: Package },
+  { title: 'Sales', url: '/sales', icon: ShoppingCart },
   { title: 'Alerts', url: '/alerts', icon: AlertTriangle },
 ];
 

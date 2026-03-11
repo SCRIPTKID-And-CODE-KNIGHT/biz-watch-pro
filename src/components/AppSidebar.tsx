@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button';
 const mainItems = [
   { title: 'Dashboard', url: '/', icon: LayoutDashboard },
   { title: 'Products', url: '/products', icon: Package },
+  { title: 'Sales', url: '/sales', icon: ShoppingCart },
   { title: 'Alerts', url: '/alerts', icon: AlertTriangle },
 ];
 

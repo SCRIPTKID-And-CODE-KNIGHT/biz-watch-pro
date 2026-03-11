@@ -148,6 +148,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      record_sale: {
+        Args: { _product_id: string; _quantity: number; _sold_by: string }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "staff"

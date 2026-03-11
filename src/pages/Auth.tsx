@@ -23,7 +23,7 @@ export default function Auth() {
     try {
       if (isLogin) {
         await signIn(email, password);
-        navigate('/');
+        navigate('/dashboard');
       } else {
         await signUp(email, password, fullName);
         toast.success('Account created! You can now sign in.');

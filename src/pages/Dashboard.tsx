@@ -36,8 +36,8 @@ export default function Dashboard() {
   const stats = [
     { title: 'Total Products', value: totalProducts, icon: Package, color: 'text-primary' },
     { title: 'Low Stock Items', value: lowStockItems.length, icon: AlertTriangle, color: 'text-warning' },
-    { title: 'Sales Today', value: `$${totalSalesToday.toFixed(2)}`, icon: DollarSign, color: 'text-success' },
-    { title: 'Inventory Value', value: `$${totalInventoryValue.toFixed(2)}`, icon: TrendingUp, color: 'text-primary' },
+    { title: 'Sales Today', value: formatTZS(totalSalesToday), icon: DollarSign, color: 'text-success' },
+    { title: 'Inventory Value', value: formatTZS(totalInventoryValue), icon: TrendingUp, color: 'text-primary' },
   ];
 
   return (

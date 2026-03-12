@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
+import { HelpGuide } from '@/components/HelpGuide';
 
 export function AppLayout({ children }: { children: ReactNode }) {
   return (
@@ -16,6 +17,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </main>
         </div>
       </div>
+      <HelpGuide />
     </SidebarProvider>
   );
 }

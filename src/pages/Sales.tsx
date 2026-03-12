@@ -10,15 +10,40 @@ import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ShoppingCart, Plus } from 'lucide-react';
+import { ShoppingCart, Plus, Trash2, CalendarDays } from 'lucide-react';
 import { toast } from 'sonner';
+import { startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth, format } from 'date-fns';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+
+type DateRange = 'today' | 'week' | 'month' | 'custom' | 'all';
 
 export default function Sales() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [productId, setProductId] = useState('');
   const [quantity, setQuantity] = useState('1');
-  const { user } = useAuth();
+  const [dateRange, setDateRange] = useState<DateRange>('all');
+  const [customDate, setCustomDate] = useState<Date | undefined>(undefined);
+  const { user, role } = useAuth();
   const queryClient = useQueryClient();
+
+  const getDateFilter = () => {
+    const now = new Date();
+    switch (dateRange) {
+      case 'today':
+        return { from: startOfDay(now).toISOString(), to: endOfDay(now).toISOString() };
+      case 'week':
+        return { from: startOfWeek(now, { weekStartsOn: 1 }).toISOString(), to: endOfWeek(now, { weekStartsOn: 1 }).toISOString() };
+      case 'month':
+        return { from: startOfMonth(now).toISOString(), to: endOfMonth(now).toISOString() };
+      case 'custom':
+        if (customDate) return { from: startOfDay(customDate).toISOString(), to: endOfDay(customDate).toISOString() };
+        return null;
+      default:
+        return null;
+    }
+  };
 
   const { data: products = [] } = useQuery({
     queryKey: ['products'],
@@ -30,13 +55,21 @@ export default function Sales() {
   });
 
   const { data: sales = [], isLoading } = useQuery({
-    queryKey: ['sales'],
+    queryKey: ['sales', dateRange, customDate?.toISOString()],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('sales')
         .select('*, products(name)')
-        .order('created_at', { ascending: false })
-        .limit(50);
+        .order('created_at', { ascending: false });
+
+      const filter = getDateFilter();
+      if (filter) {
+        query = query.gte('created_at', filter.from).lte('created_at', filter.to);
+      } else {
+        query = query.limit(50);
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
       return data;
     },
@@ -66,6 +99,21 @@ export default function Sales() {
     },
     onError: (err: any) => toast.error(err.message),
   });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('sales').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['sales'] });
+      queryClient.invalidateQueries({ queryKey: ['sales-today'] });
+      toast.success('Sale deleted');
+    },
+    onError: (err: any) => toast.error(err.message),
+  });
+
+  const totalFiltered = sales.reduce((sum: number, s: any) => sum + Number(s.total_amount), 0);
 
   return (
     <div>
@@ -129,12 +177,50 @@ export default function Sales() {
         </Dialog>
       </div>
 
+      {/* Date Range Filter */}
+      <div className="flex flex-wrap items-center gap-2 mb-6">
+        {(['all', 'today', 'week', 'month', 'custom'] as DateRange[]).map((range) => (
+          <Button
+            key={range}
+            variant={dateRange === range ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setDateRange(range)}
+          >
+            {range === 'all' ? 'All' : range === 'today' ? 'Today' : range === 'week' ? 'This Week' : range === 'month' ? 'This Month' : 'Pick Date'}
+          </Button>
+        ))}
+        {dateRange === 'custom' && (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" size="sm" className={cn(!customDate && 'text-muted-foreground')}>
+                <CalendarDays className="h-4 w-4 mr-1" />
+                {customDate ? format(customDate, 'PPP') : 'Select date'}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={customDate}
+                onSelect={setCustomDate}
+                initialFocus
+                className={cn("p-3 pointer-events-auto")}
+              />
+            </PopoverContent>
+          </Popover>
+        )}
+        {dateRange !== 'all' && sales.length > 0 && (
+          <span className="text-sm text-muted-foreground ml-auto">
+            {sales.length} sale{sales.length !== 1 ? 's' : ''} · Total: <span className="font-semibold text-foreground">{formatTZS(totalFiltered)}</span>
+          </span>
+        )}
+      </div>
+
       {isLoading ? (
         <p className="text-muted-foreground">Loading sales...</p>
       ) : sales.length === 0 ? (
         <Card className="p-12 text-center">
           <ShoppingCart className="h-10 w-10 mx-auto mb-3 text-muted-foreground" />
-          <p className="text-muted-foreground">No sales recorded yet.</p>
+          <p className="text-muted-foreground">No sales recorded{dateRange !== 'all' ? ' for this period' : ' yet'}.</p>
         </Card>
       ) : (
         <Card>
@@ -145,6 +231,7 @@ export default function Sales() {
                 <TableHead>Qty</TableHead>
                 <TableHead>Total</TableHead>
                 <TableHead className="hidden sm:table-cell">Date</TableHead>
+                {role === 'admin' && <TableHead className="text-right">Actions</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -156,6 +243,13 @@ export default function Sales() {
                   <TableCell className="hidden sm:table-cell text-muted-foreground">
                     {new Date(s.created_at).toLocaleDateString()}
                   </TableCell>
+                  {role === 'admin' && (
+                    <TableCell className="text-right">
+                      <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(s.id)}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>

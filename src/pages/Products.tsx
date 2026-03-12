@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { formatTZS } from '@/lib/currency';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -180,7 +181,7 @@ export default function Products() {
                 <TableRow key={p.id}>
                   <TableCell className="font-medium">{p.name}</TableCell>
                   <TableCell className="hidden sm:table-cell text-muted-foreground">{p.sku || '—'}</TableCell>
-                  <TableCell>${Number(p.price).toFixed(2)}</TableCell>
+                  <TableCell>{formatTZS(Number(p.price))}</TableCell>
                   <TableCell>
                     <Badge variant={p.quantity <= p.min_stock_level ? 'destructive' : 'secondary'}>
                       {p.quantity}

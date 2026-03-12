@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Package, AlertTriangle, DollarSign, TrendingUp } from 'lucide-react';
+import { formatTZS } from '@/lib/currency';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
@@ -35,8 +36,8 @@ export default function Dashboard() {
   const stats = [
     { title: 'Total Products', value: totalProducts, icon: Package, color: 'text-primary' },
     { title: 'Low Stock Items', value: lowStockItems.length, icon: AlertTriangle, color: 'text-warning' },
-    { title: 'Sales Today', value: `$${totalSalesToday.toFixed(2)}`, icon: DollarSign, color: 'text-success' },
-    { title: 'Inventory Value', value: `$${totalInventoryValue.toFixed(2)}`, icon: TrendingUp, color: 'text-primary' },
+    { title: 'Sales Today', value: formatTZS(totalSalesToday), icon: DollarSign, color: 'text-success' },
+    { title: 'Inventory Value', value: formatTZS(totalInventoryValue), icon: TrendingUp, color: 'text-primary' },
   ];
 
   return (
@@ -91,7 +92,7 @@ export default function Dashboard() {
                   <p className="font-medium">{s.products?.name}</p>
                   <p className="text-sm text-muted-foreground">Qty: {s.quantity}</p>
                 </div>
-                <p className="font-semibold">${Number(s.total_amount).toFixed(2)}</p>
+                <p className="font-semibold">{formatTZS(Number(s.total_amount))}</p>
               </Card>
             ))}
           </div>

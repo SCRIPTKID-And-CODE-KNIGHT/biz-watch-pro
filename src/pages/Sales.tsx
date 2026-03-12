@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { formatTZS } from '@/lib/currency';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -91,7 +92,7 @@ export default function Sales() {
                   <SelectContent>
                     {products.filter((p: any) => p.quantity > 0).map((p: any) => (
                       <SelectItem key={p.id} value={p.id}>
-                        {p.name} — {p.quantity} in stock @ ${Number(p.price).toFixed(2)}
+                        {p.name} — {p.quantity} in stock @ {formatTZS(Number(p.price))}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -112,11 +113,11 @@ export default function Sales() {
                 <div className="rounded-lg border border-border bg-muted/50 p-3 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Unit price</span>
-                    <span>${Number(selectedProduct.price).toFixed(2)}</span>
+                    <span>{formatTZS(Number(selectedProduct.price))}</span>
                   </div>
                   <div className="flex justify-between font-semibold mt-1">
                     <span>Total</span>
-                    <span>${(Number(selectedProduct.price) * (parseInt(quantity) || 0)).toFixed(2)}</span>
+                    <span>{formatTZS(Number(selectedProduct.price) * (parseInt(quantity) || 0))}</span>
                   </div>
                 </div>
               )}
@@ -151,7 +152,7 @@ export default function Sales() {
                 <TableRow key={s.id}>
                   <TableCell className="font-medium">{s.products?.name}</TableCell>
                   <TableCell>{s.quantity}</TableCell>
-                  <TableCell>${Number(s.total_amount).toFixed(2)}</TableCell>
+                  <TableCell>{formatTZS(Number(s.total_amount))}</TableCell>
                   <TableCell className="hidden sm:table-cell text-muted-foreground">
                     {new Date(s.created_at).toLocaleDateString()}
                   </TableCell>

@@ -92,7 +92,7 @@ export default function Dashboard() {
                   <p className="font-medium">{s.products?.name}</p>
                   <p className="text-sm text-muted-foreground">Qty: {s.quantity}</p>
                 </div>
-                <p className="font-semibold">${Number(s.total_amount).toFixed(2)}</p>
+                <p className="font-semibold">{formatTZS(Number(s.total_amount))}</p>
               </Card>
             ))}
           </div>

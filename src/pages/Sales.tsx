@@ -152,7 +152,7 @@ export default function Sales() {
                 <TableRow key={s.id}>
                   <TableCell className="font-medium">{s.products?.name}</TableCell>
                   <TableCell>{s.quantity}</TableCell>
-                  <TableCell>${Number(s.total_amount).toFixed(2)}</TableCell>
+                  <TableCell>{formatTZS(Number(s.total_amount))}</TableCell>
                   <TableCell className="hidden sm:table-cell text-muted-foreground">
                     {new Date(s.created_at).toLocaleDateString()}
                   </TableCell>

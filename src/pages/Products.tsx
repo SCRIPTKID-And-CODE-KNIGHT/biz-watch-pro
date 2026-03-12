@@ -180,7 +180,7 @@ export default function Products() {
                 <TableRow key={p.id}>
                   <TableCell className="font-medium">{p.name}</TableCell>
                   <TableCell className="hidden sm:table-cell text-muted-foreground">{p.sku || '—'}</TableCell>
-                  <TableCell>${Number(p.price).toFixed(2)}</TableCell>
+                  <TableCell>{formatTZS(Number(p.price))}</TableCell>
                   <TableCell>
                     <Badge variant={p.quantity <= p.min_stock_level ? 'destructive' : 'secondary'}>
                       {p.quantity}

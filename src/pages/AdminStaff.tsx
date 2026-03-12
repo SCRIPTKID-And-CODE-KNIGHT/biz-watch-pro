@@ -23,28 +23,31 @@ export default function AdminStaff() {
   const { data: staffList = [] } = useQuery({
     queryKey: ['staff-list'],
     queryFn: async () => {
-      const { data: roles, error } = await supabase.from('user_roles').select('*, profiles:user_id(full_name, email)');
+      // Fetch roles and profiles separately since there's no FK relationship
+      const { data: roles, error } = await supabase.from('user_roles').select('*');
       if (error) throw error;
-      return roles;
+
+      const { data: profiles } = await supabase.from('profiles').select('*');
+      
+      // Merge profiles into roles
+      return roles.map((r: any) => ({
+        ...r,
+        profiles: profiles?.find((p: any) => p.user_id === r.user_id) || null,
+      }));
     },
   });
 
   const addStaffMutation = useMutation({
     mutationFn: async () => {
-      // Sign up the staff user
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { full_name: fullName } },
-      });
-      if (error) throw error;
-      if (!data.user) throw new Error('Failed to create user');
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Not authenticated');
 
-      // Assign staff role
-      const { error: roleError } = await supabase
-        .from('user_roles')
-        .insert({ user_id: data.user.id, role: 'staff' });
-      if (roleError) throw roleError;
+      const response = await supabase.functions.invoke('create-staff', {
+        body: { email, password, fullName },
+      });
+
+      if (response.error) throw new Error(response.error.message);
+      if (response.data?.error) throw new Error(response.data.error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['staff-list'] });

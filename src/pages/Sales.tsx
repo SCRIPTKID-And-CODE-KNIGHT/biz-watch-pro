@@ -92,7 +92,7 @@ export default function Sales() {
                   <SelectContent>
                     {products.filter((p: any) => p.quantity > 0).map((p: any) => (
                       <SelectItem key={p.id} value={p.id}>
-                        {p.name} — {p.quantity} in stock @ ${Number(p.price).toFixed(2)}
+                        {p.name} — {p.quantity} in stock @ {formatTZS(Number(p.price))}
                       </SelectItem>
                     ))}
                   </SelectContent>

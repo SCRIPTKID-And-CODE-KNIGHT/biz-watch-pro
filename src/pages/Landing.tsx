@@ -89,11 +89,14 @@ export default function Landing() {
               Simple inventory management for growing businesses
             </div>
             <h1
-              className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl leading-tight"
+              className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl leading-tight min-h-[1.2em]"
               style={{ fontFamily: 'var(--font-display)' }}
             >
-              Take control of your
-              <span className="text-primary"> inventory</span>
+              <TypewriterText 
+                text="Take control of your inventory" 
+                highlightWord="inventory"
+                highlightClass="text-primary"
+              />
             </h1>
             <p className="mx-auto lg:mx-0 mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed">
               StockPilot helps you track products, record sales, monitor stock levels, and manage your team — all from one clean dashboard.

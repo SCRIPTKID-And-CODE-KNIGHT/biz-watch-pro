@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Package, BarChart3, Bell, Users, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import { Package, BarChart3, Bell, Users, ArrowRight, ShieldCheck, Zap, Mail, MapPin, Phone } from 'lucide-react';
+import heroImage from '@/assets/hero-dashboard.jpg';
 
 const features = [
   { icon: Package, title: 'Product Management', desc: 'Add, edit, and organize your entire inventory with SKU tracking and categories.' },
@@ -37,27 +38,41 @@ export default function Landing() {
       </header>
 
       {/* Hero */}
-      <section className="mx-auto max-w-6xl px-6 pt-20 pb-16 text-center md:pt-32 md:pb-24">
-        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-4 py-1.5 text-sm text-muted-foreground mb-6">
-          <Zap className="h-3.5 w-3.5 text-accent" />
-          Simple inventory management for growing businesses
-        </div>
-        <h1
-          className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl leading-tight"
-          style={{ fontFamily: 'var(--font-display)' }}
-        >
-          Take control of your
-          <span className="text-primary"> inventory</span>
-        </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed">
-          StockPilot helps you track products, record sales, monitor stock levels, and manage your team — all from one clean dashboard.
-        </p>
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button size="lg" className="text-base px-8" asChild>
-            <Link to="/auth">
-              Start for Free <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
+      <section className="mx-auto max-w-6xl px-6 pt-20 pb-16 md:pt-32 md:pb-24">
+        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
+          <div className="text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-4 py-1.5 text-sm text-muted-foreground mb-6">
+              <Zap className="h-3.5 w-3.5 text-accent" />
+              Simple inventory management for growing businesses
+            </div>
+            <h1
+              className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl leading-tight"
+              style={{ fontFamily: 'var(--font-display)' }}
+            >
+              Take control of your
+              <span className="text-primary"> inventory</span>
+            </h1>
+            <p className="mx-auto lg:mx-0 mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed">
+              StockPilot helps you track products, record sales, monitor stock levels, and manage your team — all from one clean dashboard.
+            </p>
+            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+              <Button size="lg" className="text-base px-8" asChild>
+                <Link to="/auth">
+                  Start for Free <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+          <div className="relative">
+            <div className="rounded-2xl overflow-hidden shadow-2xl border border-border bg-card">
+              <img 
+                src={heroImage} 
+                alt="StockPilot Dashboard Preview" 
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="absolute -z-10 inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-3xl blur-3xl" />
+          </div>
         </div>
       </section>
 
@@ -108,11 +123,73 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border">
-        <div className="mx-auto max-w-6xl px-6 py-6 flex items-center justify-between text-sm text-muted-foreground">
-          <span>© {new Date().getFullYear()} StockPilot</span>
-          <div className="flex items-center gap-1">
-            <Package className="h-4 w-4" /> StockPilot
+      <footer className="border-t border-border bg-background">
+        <div className="mx-auto max-w-6xl px-6 py-12 md:py-16">
+          <div className="grid gap-8 md:grid-cols-4">
+            {/* Brand */}
+            <div className="md:col-span-1">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
+                  <Package className="h-5 w-5 text-primary-foreground" />
+                </div>
+                <span className="text-xl font-bold tracking-tight" style={{ fontFamily: 'var(--font-display)' }}>
+                  StockPilot
+                </span>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Simple inventory management for growing businesses. Track products, record sales, and manage your team.
+              </p>
+            </div>
+
+            {/* Quick Links */}
+            <div>
+              <h4 className="font-semibold text-foreground mb-4" style={{ fontFamily: 'var(--font-display)' }}>Product</h4>
+              <ul className="space-y-3 text-sm text-muted-foreground">
+                <li><Link to="/auth" className="hover:text-foreground transition-colors">Get Started</Link></li>
+                <li><Link to="/auth" className="hover:text-foreground transition-colors">Sign In</Link></li>
+                <li><span className="hover:text-foreground transition-colors cursor-pointer">Features</span></li>
+                <li><span className="hover:text-foreground transition-colors cursor-pointer">Pricing</span></li>
+              </ul>
+            </div>
+
+            {/* Features */}
+            <div>
+              <h4 className="font-semibold text-foreground mb-4" style={{ fontFamily: 'var(--font-display)' }}>Features</h4>
+              <ul className="space-y-3 text-sm text-muted-foreground">
+                <li><span className="hover:text-foreground transition-colors cursor-pointer">Inventory Tracking</span></li>
+                <li><span className="hover:text-foreground transition-colors cursor-pointer">Sales Reports</span></li>
+                <li><span className="hover:text-foreground transition-colors cursor-pointer">Team Management</span></li>
+                <li><span className="hover:text-foreground transition-colors cursor-pointer">Low Stock Alerts</span></li>
+              </ul>
+            </div>
+
+            {/* Contact */}
+            <div>
+              <h4 className="font-semibold text-foreground mb-4" style={{ fontFamily: 'var(--font-display)' }}>Contact</h4>
+              <ul className="space-y-3 text-sm text-muted-foreground">
+                <li className="flex items-center gap-2">
+                  <Mail className="h-4 w-4" />
+                  <span>support@stockpilot.app</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  <span>Dar es Salaam, Tanzania</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Phone className="h-4 w-4" />
+                  <span>+255 700 000 000</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom bar */}
+          <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+            <span>© {new Date().getFullYear()} StockPilot. All rights reserved.</span>
+            <div className="flex items-center gap-6">
+              <span className="hover:text-foreground transition-colors cursor-pointer">Privacy Policy</span>
+              <span className="hover:text-foreground transition-colors cursor-pointer">Terms of Service</span>
+            </div>
           </div>
         </div>
       </footer>

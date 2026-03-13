@@ -13,6 +13,48 @@ const features = [
   { icon: Zap, title: 'Real-Time Dashboard', desc: 'See total products, low stock items, daily sales, and inventory value at a glance.' },
 ];
 
+function TypewriterText({ text, highlightWord, highlightClass }: { text: string; highlightWord: string; highlightClass: string }) {
+  const [displayText, setDisplayText] = useState('');
+  const [showCursor, setShowCursor] = useState(true);
+  const [isComplete, setIsComplete] = useState(false);
+
+  useEffect(() => {
+    let index = 0;
+    const interval = setInterval(() => {
+      if (index <= text.length) {
+        setDisplayText(text.slice(0, index));
+        index++;
+      } else {
+        setIsComplete(true);
+        clearInterval(interval);
+        // Stop blinking cursor after 3 seconds
+        setTimeout(() => setShowCursor(false), 3000);
+      }
+    }, 80);
+
+    return () => clearInterval(interval);
+  }, [text]);
+
+  const parts = displayText.split(highlightWord);
+
+  return (
+    <span className="typing-container">
+      {parts.length > 1 ? (
+        <>
+          {parts[0]}
+          <span className={highlightClass}>{highlightWord}</span>
+          {parts[1]}
+        </>
+      ) : (
+        displayText
+      )}
+      {showCursor && (
+        <span className="inline-block w-[3px] h-[1em] bg-primary ml-1 animate-pulse" />
+      )}
+    </span>
+  );
+}
+
 export default function Landing() {
   return (
     <div className="min-h-screen bg-background">

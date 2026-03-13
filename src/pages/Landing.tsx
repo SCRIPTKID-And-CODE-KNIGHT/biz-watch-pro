@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Package, BarChart3, Bell, Users, ArrowRight, ShieldCheck, Zap, Mail, MapPin, Phone } from 'lucide-react';
 import heroImage from '@/assets/hero-charts.jpg';
+import { useState, useEffect } from 'react';
 
 const features = [
   { icon: Package, title: 'Product Management', desc: 'Add, edit, and organize your entire inventory with SKU tracking and categories.' },
@@ -11,6 +12,48 @@ const features = [
   { icon: ShieldCheck, title: 'Role-Based Access', desc: 'Admins observe the dashboard while staff handle day-to-day product and sales operations.' },
   { icon: Zap, title: 'Real-Time Dashboard', desc: 'See total products, low stock items, daily sales, and inventory value at a glance.' },
 ];
+
+function TypewriterText({ text, highlightWord, highlightClass }: { text: string; highlightWord: string; highlightClass: string }) {
+  const [displayText, setDisplayText] = useState('');
+  const [showCursor, setShowCursor] = useState(true);
+  const [isComplete, setIsComplete] = useState(false);
+
+  useEffect(() => {
+    let index = 0;
+    const interval = setInterval(() => {
+      if (index <= text.length) {
+        setDisplayText(text.slice(0, index));
+        index++;
+      } else {
+        setIsComplete(true);
+        clearInterval(interval);
+        // Stop blinking cursor after 3 seconds
+        setTimeout(() => setShowCursor(false), 3000);
+      }
+    }, 80);
+
+    return () => clearInterval(interval);
+  }, [text]);
+
+  const parts = displayText.split(highlightWord);
+
+  return (
+    <span className="typing-container">
+      {parts.length > 1 ? (
+        <>
+          {parts[0]}
+          <span className={highlightClass}>{highlightWord}</span>
+          {parts[1]}
+        </>
+      ) : (
+        displayText
+      )}
+      {showCursor && (
+        <span className="inline-block w-[3px] h-[1em] bg-primary ml-1 animate-pulse" />
+      )}
+    </span>
+  );
+}
 
 export default function Landing() {
   return (
@@ -46,11 +89,14 @@ export default function Landing() {
               Simple inventory management for growing businesses
             </div>
             <h1
-              className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl leading-tight"
+              className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl leading-tight min-h-[1.2em]"
               style={{ fontFamily: 'var(--font-display)' }}
             >
-              Take control of your
-              <span className="text-primary"> inventory</span>
+              <TypewriterText 
+                text="Take control of your inventory" 
+                highlightWord="inventory"
+                highlightClass="text-primary"
+              />
             </h1>
             <p className="mx-auto lg:mx-0 mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed">
               StockPilot helps you track products, record sales, monitor stock levels, and manage your team — all from one clean dashboard.

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Package, BarChart3, Bell, Users, ArrowRight, ShieldCheck, Zap, Mail, MapPin, Phone } from 'lucide-react';
-import heroImage from '@/assets/hero-dashboard.jpg';
+import heroImage from '@/assets/hero-charts.jpg';
 
 const features = [
   { icon: Package, title: 'Product Management', desc: 'Add, edit, and organize your entire inventory with SKU tracking and categories.' },

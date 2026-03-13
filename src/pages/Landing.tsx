@@ -16,24 +16,37 @@ const features = [
 function TypewriterText({ text, highlightWord, highlightClass }: { text: string; highlightWord: string; highlightClass: string }) {
   const [displayText, setDisplayText] = useState('');
   const [showCursor, setShowCursor] = useState(true);
-  const [isComplete, setIsComplete] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    let index = 0;
-    const interval = setInterval(() => {
-      if (index <= text.length) {
-        setDisplayText(text.slice(0, index));
-        index++;
+    let timeout: ReturnType<typeof setTimeout>;
+    
+    const animate = () => {
+      if (!isDeleting) {
+        // Typing phase
+        if (displayText.length < text.length) {
+          setDisplayText(text.slice(0, displayText.length + 1));
+          timeout = setTimeout(animate, 80);
+        } else {
+          // Pause before deleting
+          timeout = setTimeout(() => setIsDeleting(true), 2000);
+        }
       } else {
-        setIsComplete(true);
-        clearInterval(interval);
-        // Stop blinking cursor after 3 seconds
-        setTimeout(() => setShowCursor(false), 3000);
+        // Deleting phase
+        if (displayText.length > 0) {
+          setDisplayText(displayText.slice(0, -1));
+          timeout = setTimeout(animate, 40);
+        } else {
+          // Pause before typing again
+          setIsDeleting(false);
+          timeout = setTimeout(animate, 500);
+        }
       }
-    }, 80);
+    };
 
-    return () => clearInterval(interval);
-  }, [text]);
+    timeout = setTimeout(animate, 500);
+    return () => clearTimeout(timeout);
+  }, [displayText, isDeleting, text]);
 
   const parts = displayText.split(highlightWord);
 
@@ -48,9 +61,7 @@ function TypewriterText({ text, highlightWord, highlightClass }: { text: string;
       ) : (
         displayText
       )}
-      {showCursor && (
-        <span className="inline-block w-[3px] h-[1em] bg-primary ml-1 animate-pulse" />
-      )}
+      <span className="inline-block w-[3px] h-[1em] bg-primary ml-1 animate-pulse" />
     </span>
   );
 }
